@@ -60,33 +60,30 @@ async function createCardImage(randomIdCard, fieldSide) {
   cardImage.setAttribute("data-id", randomIdCard);
   cardImage.classList.add("card");
 
-  if (fieldSide === playerSides.player1) {
+  if (fieldSide === state.playerSides.player1) {
     cardImage.addEventListener("mouseover", () => {
       drawSelectedCard(randomIdCard);
     });
-  
+
     cardImage.addEventListener("click", () => {
       setCardsField(cardImage.getAttribute("data-id"));
     });
   }
-  
-
-
 
   return cardImage;
 }
 
 async function showHiddenCardFieldsImage(value) {
-  if ( value=== true) {
+  if (value === true) {
     state.fieldCards.player.style.display = "block";
     state.fieldCards.computer.style.display = "block";
-  } else if ( value=== false) {
-    state.fieldCards.player.style.display="none";
-    state.fieldCards.computer.style.display ="none";
+  } else if (value === false) {
+    state.fieldCards.player.style.display = "none";
+    state.fieldCards.computer.style.display = "none";
   }
 }
 async function hiddenCardDetails() {
-  state.cardSprites.avatar.src="";
+  state.cardSprites.avatar.src = "";
   state.cardSprites.name.innerText = "";
   state.cardSprites.type.innerText = "";
 }
@@ -94,48 +91,46 @@ async function hiddenCardDetails() {
 
 
 
-
-async function setCardsField(randomIdCard){
-
-  //remove todas as cartas 
+async function setCardsField(randomIdCard) {
+  //remove todas as cartas
   await removeAllCardsImages();
 
-  //sorteia a carta 
-  let computerCardId = await getRandomIdCard();
+  //sorteia a carta
+  let computerCardId = await getRandomCardId();
 
   await showHiddenCardFieldsImage(true);
 
   await hiddenCardDetails();
 
-  await drawCardsInField(randomIdCard,computerCardId);
+  await drawCardsInField(randomIdCard, computerCardId);
 
   let duelResults = await checkDuelResults(randomIdCard, computerCardId);
 
   await updateScore();
   await drawButton(duelResults);
 }
-async function drawCardsInField(randomIdCard,computerCardId){
+async function drawCardsInField(randomIdCard, computerCardId) {
   state.fieldCards.player.src = cardData[randomIdCard].img;
   state.fieldCards.computer.src = cardData[computerCardId].img;
 }
 
 async function drawButton(text) {
-  state.actions.button.innerText = text.toUpperCase();
-  state.actions.button.style.display = "block";
+  state.action.button.innerText = text.toUpperCase();
+  state.action.button.style.display = "block";
 }
 
 async function updateScore() {
-  state.score.scoreBox.innerText = `Win: ${state.score.playerScore} | Lose: ${state.score.computerScore}`
+  state.score.scoreBox.innerText = `Win: ${state.score.playerScore} | Lose: ${state.score.computerScore}`;
 }
 
 async function checkDuelResults(playerCardId, computerCardId) {
   let duelResults = "Draw";
   let playerCard = cardData[playerCardId];
 
-  if(playerCard.winOf.includes(computerCardId)){
+  if (playerCard.winOf.includes(computerCardId)) {
     duelResults = "Win";
     state.score.playerScore++;
-  } else if (playerCard.loseOf.includes(computerCardId)){
+  } else if (playerCard.loseOf.includes(computerCardId)) {
     duelResults = "lose";
     state.score.computerScore++;
   }
@@ -147,16 +142,16 @@ async function checkDuelResults(playerCardId, computerCardId) {
 
 
 async function removeAllCardsImages() {
-  let {computerBox,player1Box}= state.playerSides;
-  let imgElements = computerBox.querySelectorAll("img")
+  let { computerBox, player1Box } = state.playerSides;
+  let imgElements = computerBox.querySelectorAll("img");
   imgElements.forEach((img) => {
     img.remove();
-  })
+  });
 
-   imgElements = player1Box.querySelectorAll("img")
-   imgElements.forEach((img) => {
+  imgElements = player1Box.querySelectorAll("img");
+  imgElements.forEach((img) => {
     img.remove();
-  })
+  });
 }
 
 async function drawSelectedCard(index){
@@ -206,8 +201,8 @@ function init(){
 
   showHiddenCardFieldsImage(false)
 
-  drawCards(5, playerSides.player1);
-  drawCards(5, playerSides.computer);
+  drawCards(5,state.playerSides.player1);
+  drawCards(5, state.playerSides.computer);
 
   const bgm = document.getElementById("bgm");
   bgm.play();
